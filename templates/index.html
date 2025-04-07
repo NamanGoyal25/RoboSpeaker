@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,12 +8,35 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+    <div class="particles-container" id="particles"></div>
+
+    <div class="theme-toggle">
+        <button id="themeToggle" aria-label="Toggle dark mode">
+            <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+        </button>
+    </div>
+
     <div class="container">
         <div class="robot-head" id="robotHead">
             <div class="robot-face">
                 <div class="robot-eyes">
-                    <div class="robot-eye"></div>
-                    <div class="robot-eye"></div>
+                    <div class="robot-eye left"></div>
+                    <div class="robot-eye right"></div>
+                    <div class="robot-eye-lid left"></div>
+                    <div class="robot-eye-lid right"></div>
                 </div>
                 <div class="robot-mouth"></div>
             </div>
@@ -27,9 +50,31 @@
         </div>
 
         <div class="content">
-            <div class="textarea-container">
-                <span class="textarea-label">Enter text to speak</span>
-                <textarea id="textToSpeak" placeholder="Type something here..."></textarea>
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="text-input">Type Text</button>
+                <button class="tab-btn" data-tab="voice-input">Voice Input</button>
+            </div>
+
+            <div class="tab-content active" id="text-input">
+                <div class="textarea-container">
+                    <span class="textarea-label">Enter text to speak</span>
+                    <textarea id="textToSpeak" placeholder="Type something here..."></textarea>
+                </div>
+            </div>
+
+            <div class="tab-content" id="voice-input">
+                <div class="voice-recognition-container">
+                    <div class="recognition-status">Click the microphone to start recording</div>
+                    <button id="micButton" class="mic-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                            <line x1="12" y1="19" x2="12" y2="23"></line>
+                            <line x1="8" y1="23" x2="16" y2="23"></line>
+                        </svg>
+                    </button>
+                    <div class="recognition-result" id="recognitionResult"></div>
+                </div>
             </div>
 
             <div class="controls">
@@ -44,9 +89,26 @@
                 </select>
             </div>
 
+            <div class="speech-controls">
+                <div class="control-group">
+                    <label for="pitchSlider">Pitch:</label>
+                    <input type="range" min="0.5" max="2" step="0.1" value="1" id="pitchSlider" class="slider">
+                    <span id="pitchValue">1.0</span>
+                </div>
+                <div class="control-group">
+                    <label for="rateSlider">Speed:</label>
+                    <input type="range" min="0.5" max="2" step="0.1" value="1" id="rateSlider" class="slider">
+                    <span id="rateValue">1.0</span>
+                </div>
+            </div>
+
             <div class="translated-text" id="translatedText" style="display: none;">
                 <span class="textarea-label">Translated text</span>
                 <div class="translated-content" id="translatedContent"></div>
+            </div>
+
+            <div class="waveform-container">
+                <canvas id="waveformCanvas"></canvas>
             </div>
 
             <div class="button-group">
@@ -74,6 +136,7 @@
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
